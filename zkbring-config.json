@@ -1,0 +1,72 @@
+{
+    "version": "1",
+    "name": "zkbring/1.0.0",
+    "abis": {
+      "dropFactory": [
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "drop",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "claims",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "zkPassSchemaId",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "expiration",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "metadataIpfsHash",
+              "type": "bytes32"
+            }
+          ],
+          "name": "DropCreated",
+          "type": "event"
+        }
+      ]
+    },
+    "instances": [
+      {
+        "abi": "dropFactory",
+        "address": "0xe95265429848b48E7a45c0566A9C088B72ecd1EA",
+        "startBlock": 23313515,
+        "chain": "base-sepolia"
+      }
+    ]
+  }
+  
