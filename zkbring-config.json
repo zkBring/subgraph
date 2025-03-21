@@ -1,6 +1,6 @@
 {
     "version": "1",
-    "name": "zkbring/1.0.0",
+    "name": "zkbring/1.1.0",
     "abis": {
       "dropFactory": [
         {
@@ -33,7 +33,7 @@
             {
               "indexed": false,
               "internalType": "uint256",
-              "name": "claims",
+              "name": "maxClaims",
               "type": "uint256"
             },
             {
@@ -63,8 +63,8 @@
     "instances": [
       {
         "abi": "dropFactory",
-        "address": "0xe95265429848b48E7a45c0566A9C088B72ecd1EA",
-        "startBlock": 23313515,
+        "address": "0xfab2030f5d52b605990266dd92c162fa871b1148",
+        "startBlock": 23392975,
         "chain": "base-sepolia"
       }
     ]
