@@ -1,0 +1,35 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: DropFactory
+    network: base-sepolia
+    source:
+      address: "0xfab2030f5d52b605990266dd92c162fa871b1148"
+      abi: DropFactory
+      startBlock: 23392975
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DropCreated
+        - FeeRecipientUpdated
+        - FeeUpdated
+        - OwnershipTransferred
+      abis:
+        - name: DropFactory
+          file: ./abis/DropFactory.json
+      eventHandlers:
+        - event: DropCreated(indexed address,indexed address,indexed address,uint256,uint256,bytes32,uint256,bytes32)
+          handler: handleDropCreated
+        - event: FeeRecipientUpdated(address)
+          handler: handleFeeRecipientUpdated
+        - event: FeeUpdated(uint256)
+          handler: handleFeeUpdated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/drop-factory.ts
