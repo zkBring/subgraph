@@ -1,0 +1,22 @@
+type DropCreated @entity(immutable: true) {
+  id: Bytes!
+  creator: Bytes! # address
+  drop: Bytes! # address
+  token: Bytes! # address
+  amount: BigInt! # uint256
+  maxClaims: BigInt! # uint256
+  zkPassSchemaId: Bytes! # bytes32
+  expiration: BigInt! # uint256
+  metadataIpfsHash: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ClaimEvent @entity {
+  id: ID!
+  recipient: Bytes!
+  uHash: Bytes!
+  timestamp: BigInt!
+  dropAddress: Bytes!
+}
