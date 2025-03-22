@@ -1,0 +1,46 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: DropFactory
+    network: base-sepolia
+    source:
+      address: "0xfab2030f5d52b605990266dd92c162fa871b1148"
+      startBlock: 23392975
+      abi: DropFactory      
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/drop-factory.ts
+      entities:
+        - DropERC20
+      abis:
+        - name: DropFactory
+          file: ./abis/DropFactory.json
+      eventHandlers:
+        - event: DropCreated(indexed address,indexed address,indexed address,uint256,uint256,bytes32,uint256,bytes32)
+          handler: handleDropCreated
+
+templates:
+  - kind: ethereum/contract
+    name: DropERC20Template
+    network: base-sepolia
+    source:
+      abi: DropERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/drop-erc20.ts
+      entities:
+        - ClaimEvent
+      abis:
+        - name: DropERC20
+          file: ./abis/DropERC20.json
+      eventHandlers:
+        - event: Claimed(indexed address,bytes32)
+          handler: handleClaim
