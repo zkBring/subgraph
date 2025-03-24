@@ -12,9 +12,9 @@ import {
 } from "@graphprotocol/graph-ts";
 
 export class DropCreated extends Entity {
-  constructor(id: Bytes) {
+  constructor(id: string) {
     super();
-    this.set("id", Value.fromBytes(id));
+    this.set("id", Value.fromString(id));
   }
 
   save(): void {
@@ -22,75 +22,73 @@ export class DropCreated extends Entity {
     assert(id != null, "Cannot save DropCreated entity without an ID");
     if (id) {
       assert(
-        id.kind == ValueKind.BYTES,
-        `Entities of type DropCreated must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+        id.kind == ValueKind.STRING,
+        `Entities of type DropCreated must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("DropCreated", id.toBytes().toHexString(), this);
+      store.set("DropCreated", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: Bytes): DropCreated | null {
+  static loadInBlock(id: string): DropCreated | null {
     return changetype<DropCreated | null>(
-      store.get_in_block("DropCreated", id.toHexString()),
+      store.get_in_block("DropCreated", id),
     );
   }
 
-  static load(id: Bytes): DropCreated | null {
-    return changetype<DropCreated | null>(
-      store.get("DropCreated", id.toHexString()),
-    );
+  static load(id: string): DropCreated | null {
+    return changetype<DropCreated | null>(store.get("DropCreated", id));
   }
 
-  get id(): Bytes {
+  get id(): string {
     let value = this.get("id");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set id(value: Bytes) {
-    this.set("id", Value.fromBytes(value));
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
   }
 
-  get creator(): Bytes {
+  get creator(): string {
     let value = this.get("creator");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set creator(value: Bytes) {
-    this.set("creator", Value.fromBytes(value));
+  set creator(value: string) {
+    this.set("creator", Value.fromString(value));
   }
 
-  get drop(): Bytes {
+  get drop(): string {
     let value = this.get("drop");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set drop(value: Bytes) {
-    this.set("drop", Value.fromBytes(value));
+  set drop(value: string) {
+    this.set("drop", Value.fromString(value));
   }
 
-  get token(): Bytes {
+  get token(): string {
     let value = this.get("token");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set token(value: Bytes) {
-    this.set("token", Value.fromBytes(value));
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
   }
 
   get amount(): BigInt {
@@ -119,17 +117,17 @@ export class DropCreated extends Entity {
     this.set("maxClaims", Value.fromBigInt(value));
   }
 
-  get zkPassSchemaId(): Bytes {
+  get zkPassSchemaId(): string {
     let value = this.get("zkPassSchemaId");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set zkPassSchemaId(value: Bytes) {
-    this.set("zkPassSchemaId", Value.fromBytes(value));
+  set zkPassSchemaId(value: string) {
+    this.set("zkPassSchemaId", Value.fromString(value));
   }
 
   get expiration(): BigInt {
@@ -145,17 +143,17 @@ export class DropCreated extends Entity {
     this.set("expiration", Value.fromBigInt(value));
   }
 
-  get metadataIpfsHash(): Bytes {
+  get metadataIpfsHash(): string {
     let value = this.get("metadataIpfsHash");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set metadataIpfsHash(value: Bytes) {
-    this.set("metadataIpfsHash", Value.fromBytes(value));
+  set metadataIpfsHash(value: string) {
+    this.set("metadataIpfsHash", Value.fromString(value));
   }
 
   get blockNumber(): BigInt {
@@ -184,17 +182,30 @@ export class DropCreated extends Entity {
     this.set("blockTimestamp", Value.fromBigInt(value));
   }
 
-  get transactionHash(): Bytes {
+  get transactionHash(): string {
     let value = this.get("transactionHash");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set transactionHash(value: Bytes) {
-    this.set("transactionHash", Value.fromBytes(value));
+  set transactionHash(value: string) {
+    this.set("transactionHash", Value.fromString(value));
+  }
+
+  get factoryAddress(): string {
+    let value = this.get("factoryAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set factoryAddress(value: string) {
+    this.set("factoryAddress", Value.fromString(value));
   }
 }
 
@@ -237,34 +248,34 @@ export class ClaimEvent extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get recipient(): Bytes {
+  get recipient(): string {
     let value = this.get("recipient");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set recipient(value: Bytes) {
-    this.set("recipient", Value.fromBytes(value));
+  set recipient(value: string) {
+    this.set("recipient", Value.fromString(value));
   }
 
-  get uHash(): Bytes {
+  get uHash(): string {
     let value = this.get("uHash");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set uHash(value: Bytes) {
-    this.set("uHash", Value.fromBytes(value));
+  set uHash(value: string) {
+    this.set("uHash", Value.fromString(value));
   }
 
-  get timestamp(): BigInt {
-    let value = this.get("timestamp");
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -272,20 +283,20 @@ export class ClaimEvent extends Entity {
     }
   }
 
-  set timestamp(value: BigInt) {
-    this.set("timestamp", Value.fromBigInt(value));
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
   }
 
-  get dropAddress(): Bytes {
+  get dropAddress(): string {
     let value = this.get("dropAddress");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set dropAddress(value: Bytes) {
-    this.set("dropAddress", Value.fromBytes(value));
+  set dropAddress(value: string) {
+    this.set("dropAddress", Value.fromString(value));
   }
 }

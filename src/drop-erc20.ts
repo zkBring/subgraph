@@ -6,10 +6,10 @@ export function handleClaim(event: Claimed): void {
   let id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let claimEvent = new ClaimEvent(id);
 
-  claimEvent.recipient = event.params.recipient;
-  claimEvent.uHash = event.params.uHash;
-  claimEvent.timestamp = event.block.timestamp;
-  claimEvent.dropAddress = event.address; // address of the DropERC20 contract
+  claimEvent.recipient = event.params.recipient.toHexString()
+  claimEvent.uHash = event.params.uHash.toHexString()
+  claimEvent.blockTimestamp = event.block.timestamp;
+  claimEvent.dropAddress = event.address.toHexString()
 
   claimEvent.save();
 }

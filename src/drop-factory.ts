@@ -10,24 +10,23 @@ import { DropERC20Template } from "../generated/templates";
 
 export function handleDropCreated(event: DropCreatedEvent): void {
   let entity = new DropCreated(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   )
-  entity.creator = event.params.creator
-  entity.drop = event.params.drop
-  entity.token = event.params.token
+  entity.creator = event.params.creator.toHexString()
+  entity.drop = event.params.drop.toHexString()
+  entity.token = event.params.token.toHexString()
   entity.amount = event.params.amount
   entity.maxClaims = event.params.maxClaims
-  entity.zkPassSchemaId = event.params.zkPassSchemaId
+  entity.zkPassSchemaId = event.params.zkPassSchemaId.toHexString()
   entity.expiration = event.params.expiration
-  entity.metadataIpfsHash = event.params.metadataIpfsHash
-
+  entity.metadataIpfsHash = event.params.metadataIpfsHash.toHexString()
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  entity.transactionHash = event.transaction.hash.toHexString()
+  entity.factoryAddress = event.address.toHexString()
 
   entity.save()
 
-  DropERC20Template.create(Address.fromBytes(entity.drop));
-
+  DropERC20Template.create(Address.fromString(entity.drop));
 }
 
