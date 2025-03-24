@@ -9,6 +9,7 @@ dataSources:
     network: base-sepolia
     source:
       address: "0xfab2030f5d52b605990266dd92c162fa871b1148"
+      startBlock: 23392975
       abi: DropFactory
     mapping:
       kind: ethereum/events
