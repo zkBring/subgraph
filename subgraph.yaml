@@ -44,3 +44,9 @@ templates:
       eventHandlers:
         - event: Claimed(indexed address,bytes32)
           handler: handleClaim
+        - event: MetadataUpdated(string)
+          handler: handleMetadataUpdated
+        - event: BringStaked(address,uint256,uint256)
+          handler: handleBringStaked
+        - event: Stopped()
+          handler: handleStopped  
