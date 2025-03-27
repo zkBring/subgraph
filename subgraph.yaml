@@ -8,8 +8,8 @@ dataSources:
     name: DropFactory
     network: base-sepolia
     source:
-      address: "0x68a0B774d6D49F190779d6A7C8FDCAB3A691EE98"
-      startBlock: 23611499
+      address: "0x0EB580F0ad587d464f2BE3C27DE7d831fc2f56e6"
+      startBlock: 23645912
       abi: DropFactory      
     mapping:
       kind: ethereum/events
