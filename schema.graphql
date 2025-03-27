@@ -7,7 +7,7 @@ type DropCreated @entity(immutable: true) {
   maxClaims: BigInt! # uint256
   zkPassSchemaId: String!  # bytes32 as hex string
   expiration: BigInt!      # uint256
-  metadataIpfsHash: String!  # bytes32 as hex string
+  metadataIpfsHash: String!  # bytes32
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: String!

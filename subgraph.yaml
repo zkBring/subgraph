@@ -8,8 +8,8 @@ dataSources:
     name: DropFactory
     network: base-sepolia
     source:
-      address: "0xfab2030f5d52b605990266dd92c162fa871b1148"
-      startBlock: 23392975
+      address: "0x68a0B774d6D49F190779d6A7C8FDCAB3A691EE98"
+      startBlock: 23611499
       abi: DropFactory      
     mapping:
       kind: ethereum/events
@@ -22,7 +22,7 @@ dataSources:
         - name: DropFactory
           file: ./abis/DropFactory.json
       eventHandlers:
-        - event: DropCreated(indexed address,indexed address,indexed address,uint256,uint256,bytes32,uint256,bytes32)
+        - event: DropCreated(indexed address,indexed address,indexed address,uint256,uint256,bytes32,uint256,string)
           handler: handleDropCreated
 
 templates:

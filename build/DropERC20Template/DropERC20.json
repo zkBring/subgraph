@@ -32,13 +32,48 @@
         "type": "uint256"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "string",
         "name": "_metadataIpfsHash",
-        "type": "bytes32"
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_zkPassAllocator",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_bringToken",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "bringToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalStaked",
+        "type": "uint256"
+      }
+    ],
+    "name": "BringStaked",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -57,6 +92,19 @@
       }
     ],
     "name": "Claimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "metadataIpfsHash",
+        "type": "string"
+      }
+    ],
+    "name": "MetadataUpdated",
     "type": "event"
   },
   {
@@ -86,7 +134,20 @@
   },
   {
     "inputs": [],
-    "name": "EXPECTED_ALLOCATOR_ADDRESS",
+    "name": "BRING_TOKEN",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ZK_PASS_ALLOCATOR_ADDRESS",
     "outputs": [
       {
         "internalType": "address",
@@ -111,6 +172,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "bringStaked",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes32",
@@ -119,7 +193,7 @@
       },
       {
         "internalType": "address",
-        "name": "validatorAddress",
+        "name": "validator",
         "type": "address"
       },
       {
@@ -133,18 +207,13 @@
         "type": "bytes32"
       },
       {
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
-      },
-      {
         "internalType": "bytes",
-        "name": "allocatorSignature",
+        "name": "allocatorSig",
         "type": "bytes"
       },
       {
         "internalType": "bytes",
-        "name": "validatorSignature",
+        "name": "validatorSig",
         "type": "bytes"
       }
     ],
@@ -162,7 +231,7 @@
       },
       {
         "internalType": "address",
-        "name": "validatorAddress",
+        "name": "validator",
         "type": "address"
       },
       {
@@ -182,22 +251,22 @@
       },
       {
         "internalType": "address",
-        "name": "ephemeralKeyAddress",
+        "name": "ephemeralKey",
         "type": "address"
       },
       {
         "internalType": "bytes",
-        "name": "ephemeralKeySignature",
+        "name": "ephemeralSig",
         "type": "bytes"
       },
       {
         "internalType": "bytes",
-        "name": "allocatorSignature",
+        "name": "allocatorSig",
         "type": "bytes"
       },
       {
         "internalType": "bytes",
-        "name": "validatorSignature",
+        "name": "validatorSig",
         "type": "bytes"
       }
     ],
@@ -233,6 +302,25 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ephemeralKey",
+        "type": "address"
+      }
+    ],
+    "name": "computeWpRecipientForEphemeralKey",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -288,9 +376,9 @@
     "name": "metadataIpfsHash",
     "outputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "string",
         "name": "",
-        "type": "bytes32"
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -312,6 +400,19 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "stake",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -365,18 +466,31 @@
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "_metadataIpfsHash",
+        "type": "string"
+      }
+    ],
+    "name": "updateMetadata",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes32",
         "name": "zkPassTaskId",
         "type": "bytes32"
       },
       {
         "internalType": "address",
-        "name": "validatorAddress",
+        "name": "validator",
         "type": "address"
       },
       {
         "internalType": "bytes",
-        "name": "allocatorSignature",
+        "name": "allocatorSig",
         "type": "bytes"
       }
     ],
@@ -400,16 +514,16 @@
       },
       {
         "internalType": "address",
-        "name": "ephemeralKeyAddress",
+        "name": "ephemeralKey",
         "type": "address"
       },
       {
         "internalType": "bytes",
-        "name": "ephemeralKeySignature",
+        "name": "ephemeralSig",
         "type": "bytes"
       }
     ],
-    "name": "verifyEphemeralKeySignature",
+    "name": "verifyEphemeralSignature",
     "outputs": [
       {
         "internalType": "bool",
@@ -439,17 +553,17 @@
       },
       {
         "internalType": "address",
-        "name": "recipient",
+        "name": "webproofRecipientAddress",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "validatorAddress",
+        "name": "validator",
         "type": "address"
       },
       {
         "internalType": "bytes",
-        "name": "validatorSignature",
+        "name": "validatorSig",
         "type": "bytes"
       }
     ],

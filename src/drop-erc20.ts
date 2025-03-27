@@ -1,5 +1,4 @@
 import { Claimed } from "../generated/templates/DropERC20Template/DropERC20";
-
 import { ClaimEvent } from "../generated/schema";
 
 export function handleClaim(event: Claimed): void {
