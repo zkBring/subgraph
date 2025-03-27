@@ -19,7 +19,7 @@ export function handleDropCreated(event: DropCreatedEvent): void {
   entity.maxClaims = event.params.maxClaims
   entity.zkPassSchemaId = event.params.zkPassSchemaId.toHexString()
   entity.expiration = event.params.expiration
-  entity.metadataIpfsHash = event.params.metadataIpfsHash.toHexString()
+  entity.metadataIpfsHash = event.params.metadataIpfsHash.toString()
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash.toHexString()

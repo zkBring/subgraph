@@ -51,8 +51,8 @@ export class DropCreated__Params {
     return this._event.parameters[6].value.toBigInt();
   }
 
-  get metadataIpfsHash(): Bytes {
-    return this._event.parameters[7].value.toBytes();
+  get metadataIpfsHash(): string {
+    return this._event.parameters[7].value.toString();
   }
 }
 
@@ -119,24 +119,62 @@ export class DropFactory extends ethereum.SmartContract {
     return new DropFactory("DropFactory", address);
   }
 
+  BRING_TOKEN(): Address {
+    let result = super.call("BRING_TOKEN", "BRING_TOKEN():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_BRING_TOKEN(): ethereum.CallResult<Address> {
+    let result = super.tryCall("BRING_TOKEN", "BRING_TOKEN():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  ZK_PASS_ALLOCATOR_ADDRESS(): Address {
+    let result = super.call(
+      "ZK_PASS_ALLOCATOR_ADDRESS",
+      "ZK_PASS_ALLOCATOR_ADDRESS():(address)",
+      [],
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_ZK_PASS_ALLOCATOR_ADDRESS(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "ZK_PASS_ALLOCATOR_ADDRESS",
+      "ZK_PASS_ALLOCATOR_ADDRESS():(address)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   createDrop(
     token: Address,
     amount: BigInt,
     maxClaims: BigInt,
     zkPassSchemaId: Bytes,
     expiration: BigInt,
-    metadataIpfsHash: Bytes,
+    metadataIpfsHash: string,
   ): Address {
     let result = super.call(
       "createDrop",
-      "createDrop(address,uint256,uint256,bytes32,uint256,bytes32):(address)",
+      "createDrop(address,uint256,uint256,bytes32,uint256,string):(address)",
       [
         ethereum.Value.fromAddress(token),
         ethereum.Value.fromUnsignedBigInt(amount),
         ethereum.Value.fromUnsignedBigInt(maxClaims),
         ethereum.Value.fromFixedBytes(zkPassSchemaId),
         ethereum.Value.fromUnsignedBigInt(expiration),
-        ethereum.Value.fromFixedBytes(metadataIpfsHash),
+        ethereum.Value.fromString(metadataIpfsHash),
       ],
     );
 
@@ -149,18 +187,18 @@ export class DropFactory extends ethereum.SmartContract {
     maxClaims: BigInt,
     zkPassSchemaId: Bytes,
     expiration: BigInt,
-    metadataIpfsHash: Bytes,
+    metadataIpfsHash: string,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "createDrop",
-      "createDrop(address,uint256,uint256,bytes32,uint256,bytes32):(address)",
+      "createDrop(address,uint256,uint256,bytes32,uint256,string):(address)",
       [
         ethereum.Value.fromAddress(token),
         ethereum.Value.fromUnsignedBigInt(amount),
         ethereum.Value.fromUnsignedBigInt(maxClaims),
         ethereum.Value.fromFixedBytes(zkPassSchemaId),
         ethereum.Value.fromUnsignedBigInt(expiration),
-        ethereum.Value.fromFixedBytes(metadataIpfsHash),
+        ethereum.Value.fromString(metadataIpfsHash),
       ],
     );
     if (result.reverted) {
@@ -240,6 +278,14 @@ export class ConstructorCall__Inputs {
   get _feeRecipient(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
+
+  get _zkPassAllocator(): Address {
+    return this._call.inputValues[2].value.toAddress();
+  }
+
+  get _bringToken(): Address {
+    return this._call.inputValues[3].value.toAddress();
+  }
 }
 
 export class ConstructorCall__Outputs {
@@ -287,8 +333,8 @@ export class CreateDropCall__Inputs {
     return this._call.inputValues[4].value.toBigInt();
   }
 
-  get metadataIpfsHash(): Bytes {
-    return this._call.inputValues[5].value.toBytes();
+  get metadataIpfsHash(): string {
+    return this._call.inputValues[5].value.toString();
   }
 }
 

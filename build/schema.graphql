@@ -1,4 +1,5 @@
-type DropCreated @entity(immutable: true) {
+
+ type DropCreated @entity(immutable: true) {
   id: ID!
   creator: String! # address as hex string
   drop: String!    # address as hex string
@@ -7,16 +8,45 @@ type DropCreated @entity(immutable: true) {
   maxClaims: BigInt! # uint256
   zkPassSchemaId: String!  # bytes32 as hex string
   expiration: BigInt!      # uint256
-  metadataIpfsHash: String!  # bytes32 as hex string
+  metadataIpfsHash: String!  # bytes32
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: String!
   factoryAddress: String!  
 }
-type ClaimEvent @entity {
+  
+type Claimed @entity {
   id: ID!
   recipient: String!
   uHash: String!
   blockTimestamp: BigInt!
   dropAddress: String!
+}
+  
+type MetadataUpdated @entity {
+  id: ID!
+  metadataIpfsHash: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  dropAddress: String!  
+}
+
+type BringStaked @entity {
+  id: ID!
+  bringToken: String!
+  amount: BigInt!
+  totalStaked: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  dropAddress: String!  
+}
+
+type Stopped @entity {
+  id: ID!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: String!
+  dropAddress: String!  
 }

@@ -10,6 +10,32 @@ import {
   BigInt,
 } from "@graphprotocol/graph-ts";
 
+export class BringStaked extends ethereum.Event {
+  get params(): BringStaked__Params {
+    return new BringStaked__Params(this);
+  }
+}
+
+export class BringStaked__Params {
+  _event: BringStaked;
+
+  constructor(event: BringStaked) {
+    this._event = event;
+  }
+
+  get bringToken(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get totalStaked(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
 export class Claimed extends ethereum.Event {
   get params(): Claimed__Params {
     return new Claimed__Params(this);
@@ -29,6 +55,24 @@ export class Claimed__Params {
 
   get uHash(): Bytes {
     return this._event.parameters[1].value.toBytes();
+  }
+}
+
+export class MetadataUpdated extends ethereum.Event {
+  get params(): MetadataUpdated__Params {
+    return new MetadataUpdated__Params(this);
+  }
+}
+
+export class MetadataUpdated__Params {
+  _event: MetadataUpdated;
+
+  constructor(event: MetadataUpdated) {
+    this._event = event;
+  }
+
+  get metadataIpfsHash(): string {
+    return this._event.parameters[0].value.toString();
   }
 }
 
@@ -73,20 +117,35 @@ export class DropERC20 extends ethereum.SmartContract {
     return new DropERC20("DropERC20", address);
   }
 
-  EXPECTED_ALLOCATOR_ADDRESS(): Address {
+  BRING_TOKEN(): Address {
+    let result = super.call("BRING_TOKEN", "BRING_TOKEN():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_BRING_TOKEN(): ethereum.CallResult<Address> {
+    let result = super.tryCall("BRING_TOKEN", "BRING_TOKEN():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  ZK_PASS_ALLOCATOR_ADDRESS(): Address {
     let result = super.call(
-      "EXPECTED_ALLOCATOR_ADDRESS",
-      "EXPECTED_ALLOCATOR_ADDRESS():(address)",
+      "ZK_PASS_ALLOCATOR_ADDRESS",
+      "ZK_PASS_ALLOCATOR_ADDRESS():(address)",
       [],
     );
 
     return result[0].toAddress();
   }
 
-  try_EXPECTED_ALLOCATOR_ADDRESS(): ethereum.CallResult<Address> {
+  try_ZK_PASS_ALLOCATOR_ADDRESS(): ethereum.CallResult<Address> {
     let result = super.tryCall(
-      "EXPECTED_ALLOCATOR_ADDRESS",
-      "EXPECTED_ALLOCATOR_ADDRESS():(address)",
+      "ZK_PASS_ALLOCATOR_ADDRESS",
+      "ZK_PASS_ALLOCATOR_ADDRESS():(address)",
       [],
     );
     if (result.reverted) {
@@ -104,6 +163,21 @@ export class DropERC20 extends ethereum.SmartContract {
 
   try_amount(): ethereum.CallResult<BigInt> {
     let result = super.tryCall("amount", "amount():(uint256)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  bringStaked(): BigInt {
+    let result = super.call("bringStaked", "bringStaked():(uint256)", []);
+
+    return result[0].toBigInt();
+  }
+
+  try_bringStaked(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("bringStaked", "bringStaked():(uint256)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -143,6 +217,31 @@ export class DropERC20 extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  computeWpRecipientForEphemeralKey(ephemeralKey: Address): Address {
+    let result = super.call(
+      "computeWpRecipientForEphemeralKey",
+      "computeWpRecipientForEphemeralKey(address):(address)",
+      [ethereum.Value.fromAddress(ephemeralKey)],
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_computeWpRecipientForEphemeralKey(
+    ephemeralKey: Address,
+  ): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "computeWpRecipientForEphemeralKey",
+      "computeWpRecipientForEphemeralKey(address):(address)",
+      [ethereum.Value.fromAddress(ephemeralKey)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   expiration(): BigInt {
@@ -194,27 +293,27 @@ export class DropERC20 extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  metadataIpfsHash(): Bytes {
+  metadataIpfsHash(): string {
     let result = super.call(
       "metadataIpfsHash",
-      "metadataIpfsHash():(bytes32)",
+      "metadataIpfsHash():(string)",
       [],
     );
 
-    return result[0].toBytes();
+    return result[0].toString();
   }
 
-  try_metadataIpfsHash(): ethereum.CallResult<Bytes> {
+  try_metadataIpfsHash(): ethereum.CallResult<string> {
     let result = super.tryCall(
       "metadataIpfsHash",
-      "metadataIpfsHash():(bytes32)",
+      "metadataIpfsHash():(string)",
       [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBytes());
+    return ethereum.CallResult.fromValue(value[0].toString());
   }
 
   owner(): Address {
@@ -264,16 +363,16 @@ export class DropERC20 extends ethereum.SmartContract {
 
   verifyAllocatorSignature(
     zkPassTaskId: Bytes,
-    validatorAddress: Address,
-    allocatorSignature: Bytes,
+    validator: Address,
+    allocatorSig: Bytes,
   ): boolean {
     let result = super.call(
       "verifyAllocatorSignature",
       "verifyAllocatorSignature(bytes32,address,bytes):(bool)",
       [
         ethereum.Value.fromFixedBytes(zkPassTaskId),
-        ethereum.Value.fromAddress(validatorAddress),
-        ethereum.Value.fromBytes(allocatorSignature),
+        ethereum.Value.fromAddress(validator),
+        ethereum.Value.fromBytes(allocatorSig),
       ],
     );
 
@@ -282,16 +381,16 @@ export class DropERC20 extends ethereum.SmartContract {
 
   try_verifyAllocatorSignature(
     zkPassTaskId: Bytes,
-    validatorAddress: Address,
-    allocatorSignature: Bytes,
+    validator: Address,
+    allocatorSig: Bytes,
   ): ethereum.CallResult<boolean> {
     let result = super.tryCall(
       "verifyAllocatorSignature",
       "verifyAllocatorSignature(bytes32,address,bytes):(bool)",
       [
         ethereum.Value.fromFixedBytes(zkPassTaskId),
-        ethereum.Value.fromAddress(validatorAddress),
-        ethereum.Value.fromBytes(allocatorSignature),
+        ethereum.Value.fromAddress(validator),
+        ethereum.Value.fromBytes(allocatorSig),
       ],
     );
     if (result.reverted) {
@@ -301,36 +400,36 @@ export class DropERC20 extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  verifyEphemeralKeySignature(
+  verifyEphemeralSignature(
     recipient: Address,
-    ephemeralKeyAddress: Address,
-    ephemeralKeySignature: Bytes,
+    ephemeralKey: Address,
+    ephemeralSig: Bytes,
   ): boolean {
     let result = super.call(
-      "verifyEphemeralKeySignature",
-      "verifyEphemeralKeySignature(address,address,bytes):(bool)",
+      "verifyEphemeralSignature",
+      "verifyEphemeralSignature(address,address,bytes):(bool)",
       [
         ethereum.Value.fromAddress(recipient),
-        ethereum.Value.fromAddress(ephemeralKeyAddress),
-        ethereum.Value.fromBytes(ephemeralKeySignature),
+        ethereum.Value.fromAddress(ephemeralKey),
+        ethereum.Value.fromBytes(ephemeralSig),
       ],
     );
 
     return result[0].toBoolean();
   }
 
-  try_verifyEphemeralKeySignature(
+  try_verifyEphemeralSignature(
     recipient: Address,
-    ephemeralKeyAddress: Address,
-    ephemeralKeySignature: Bytes,
+    ephemeralKey: Address,
+    ephemeralSig: Bytes,
   ): ethereum.CallResult<boolean> {
     let result = super.tryCall(
-      "verifyEphemeralKeySignature",
-      "verifyEphemeralKeySignature(address,address,bytes):(bool)",
+      "verifyEphemeralSignature",
+      "verifyEphemeralSignature(address,address,bytes):(bool)",
       [
         ethereum.Value.fromAddress(recipient),
-        ethereum.Value.fromAddress(ephemeralKeyAddress),
-        ethereum.Value.fromBytes(ephemeralKeySignature),
+        ethereum.Value.fromAddress(ephemeralKey),
+        ethereum.Value.fromBytes(ephemeralSig),
       ],
     );
     if (result.reverted) {
@@ -344,9 +443,9 @@ export class DropERC20 extends ethereum.SmartContract {
     zkPassTaskId: Bytes,
     uHash: Bytes,
     publicFieldsHash: Bytes,
-    recipient: Address,
-    validatorAddress: Address,
-    validatorSignature: Bytes,
+    webproofRecipientAddress: Address,
+    validator: Address,
+    validatorSig: Bytes,
   ): boolean {
     let result = super.call(
       "verifyValidatorSignature",
@@ -355,9 +454,9 @@ export class DropERC20 extends ethereum.SmartContract {
         ethereum.Value.fromFixedBytes(zkPassTaskId),
         ethereum.Value.fromFixedBytes(uHash),
         ethereum.Value.fromFixedBytes(publicFieldsHash),
-        ethereum.Value.fromAddress(recipient),
-        ethereum.Value.fromAddress(validatorAddress),
-        ethereum.Value.fromBytes(validatorSignature),
+        ethereum.Value.fromAddress(webproofRecipientAddress),
+        ethereum.Value.fromAddress(validator),
+        ethereum.Value.fromBytes(validatorSig),
       ],
     );
 
@@ -368,9 +467,9 @@ export class DropERC20 extends ethereum.SmartContract {
     zkPassTaskId: Bytes,
     uHash: Bytes,
     publicFieldsHash: Bytes,
-    recipient: Address,
-    validatorAddress: Address,
-    validatorSignature: Bytes,
+    webproofRecipientAddress: Address,
+    validator: Address,
+    validatorSig: Bytes,
   ): ethereum.CallResult<boolean> {
     let result = super.tryCall(
       "verifyValidatorSignature",
@@ -379,9 +478,9 @@ export class DropERC20 extends ethereum.SmartContract {
         ethereum.Value.fromFixedBytes(zkPassTaskId),
         ethereum.Value.fromFixedBytes(uHash),
         ethereum.Value.fromFixedBytes(publicFieldsHash),
-        ethereum.Value.fromAddress(recipient),
-        ethereum.Value.fromAddress(validatorAddress),
-        ethereum.Value.fromBytes(validatorSignature),
+        ethereum.Value.fromAddress(webproofRecipientAddress),
+        ethereum.Value.fromAddress(validator),
+        ethereum.Value.fromBytes(validatorSig),
       ],
     );
     if (result.reverted) {
@@ -452,8 +551,16 @@ export class ConstructorCall__Inputs {
     return this._call.inputValues[5].value.toBigInt();
   }
 
-  get _metadataIpfsHash(): Bytes {
-    return this._call.inputValues[6].value.toBytes();
+  get _metadataIpfsHash(): string {
+    return this._call.inputValues[6].value.toString();
+  }
+
+  get _zkPassAllocator(): Address {
+    return this._call.inputValues[7].value.toAddress();
+  }
+
+  get _bringToken(): Address {
+    return this._call.inputValues[8].value.toAddress();
   }
 }
 
@@ -486,7 +593,7 @@ export class ClaimCall__Inputs {
     return this._call.inputValues[0].value.toBytes();
   }
 
-  get validatorAddress(): Address {
+  get validator(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 
@@ -498,16 +605,12 @@ export class ClaimCall__Inputs {
     return this._call.inputValues[3].value.toBytes();
   }
 
-  get recipient(): Address {
-    return this._call.inputValues[4].value.toAddress();
+  get allocatorSig(): Bytes {
+    return this._call.inputValues[4].value.toBytes();
   }
 
-  get allocatorSignature(): Bytes {
+  get validatorSig(): Bytes {
     return this._call.inputValues[5].value.toBytes();
-  }
-
-  get validatorSignature(): Bytes {
-    return this._call.inputValues[6].value.toBytes();
   }
 }
 
@@ -540,7 +643,7 @@ export class ClaimWithEphemeralKeyCall__Inputs {
     return this._call.inputValues[0].value.toBytes();
   }
 
-  get validatorAddress(): Address {
+  get validator(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 
@@ -556,19 +659,19 @@ export class ClaimWithEphemeralKeyCall__Inputs {
     return this._call.inputValues[4].value.toAddress();
   }
 
-  get ephemeralKeyAddress(): Address {
+  get ephemeralKey(): Address {
     return this._call.inputValues[5].value.toAddress();
   }
 
-  get ephemeralKeySignature(): Bytes {
+  get ephemeralSig(): Bytes {
     return this._call.inputValues[6].value.toBytes();
   }
 
-  get allocatorSignature(): Bytes {
+  get allocatorSig(): Bytes {
     return this._call.inputValues[7].value.toBytes();
   }
 
-  get validatorSignature(): Bytes {
+  get validatorSig(): Bytes {
     return this._call.inputValues[8].value.toBytes();
   }
 }
@@ -603,6 +706,36 @@ export class RenounceOwnershipCall__Outputs {
   _call: RenounceOwnershipCall;
 
   constructor(call: RenounceOwnershipCall) {
+    this._call = call;
+  }
+}
+
+export class StakeCall extends ethereum.Call {
+  get inputs(): StakeCall__Inputs {
+    return new StakeCall__Inputs(this);
+  }
+
+  get outputs(): StakeCall__Outputs {
+    return new StakeCall__Outputs(this);
+  }
+}
+
+export class StakeCall__Inputs {
+  _call: StakeCall;
+
+  constructor(call: StakeCall) {
+    this._call = call;
+  }
+
+  get _amount(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class StakeCall__Outputs {
+  _call: StakeCall;
+
+  constructor(call: StakeCall) {
     this._call = call;
   }
 }
@@ -659,6 +792,36 @@ export class TransferOwnershipCall__Outputs {
   _call: TransferOwnershipCall;
 
   constructor(call: TransferOwnershipCall) {
+    this._call = call;
+  }
+}
+
+export class UpdateMetadataCall extends ethereum.Call {
+  get inputs(): UpdateMetadataCall__Inputs {
+    return new UpdateMetadataCall__Inputs(this);
+  }
+
+  get outputs(): UpdateMetadataCall__Outputs {
+    return new UpdateMetadataCall__Outputs(this);
+  }
+}
+
+export class UpdateMetadataCall__Inputs {
+  _call: UpdateMetadataCall;
+
+  constructor(call: UpdateMetadataCall) {
+    this._call = call;
+  }
+
+  get _metadataIpfsHash(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+}
+
+export class UpdateMetadataCall__Outputs {
+  _call: UpdateMetadataCall;
+
+  constructor(call: UpdateMetadataCall) {
     this._call = call;
   }
 }

@@ -10,6 +10,16 @@
         "internalType": "address",
         "name": "_feeRecipient",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_zkPassAllocator",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_bringToken",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -62,9 +72,9 @@
       },
       {
         "indexed": false,
-        "internalType": "bytes32",
+        "internalType": "string",
         "name": "metadataIpfsHash",
-        "type": "bytes32"
+        "type": "string"
       }
     ],
     "name": "DropCreated",
@@ -116,6 +126,32 @@
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "BRING_TOKEN",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ZK_PASS_ALLOCATOR_ADDRESS",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -143,9 +179,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "string",
         "name": "metadataIpfsHash",
-        "type": "bytes32"
+        "type": "string"
       }
     ],
     "name": "createDrop",
