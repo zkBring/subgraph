@@ -185,16 +185,39 @@ export class DropERC20 extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  claimed(param0: Bytes): boolean {
-    let result = super.call("claimed", "claimed(bytes32):(bool)", [
+  claimedAddresses(param0: Address): boolean {
+    let result = super.call(
+      "claimedAddresses",
+      "claimedAddresses(address):(bool)",
+      [ethereum.Value.fromAddress(param0)],
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_claimedAddresses(param0: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "claimedAddresses",
+      "claimedAddresses(address):(bool)",
+      [ethereum.Value.fromAddress(param0)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  claimedUsers(param0: Bytes): boolean {
+    let result = super.call("claimedUsers", "claimedUsers(bytes32):(bool)", [
       ethereum.Value.fromFixedBytes(param0),
     ]);
 
     return result[0].toBoolean();
   }
 
-  try_claimed(param0: Bytes): ethereum.CallResult<boolean> {
-    let result = super.tryCall("claimed", "claimed(bytes32):(bool)", [
+  try_claimedUsers(param0: Bytes): ethereum.CallResult<boolean> {
+    let result = super.tryCall("claimedUsers", "claimedUsers(bytes32):(bool)", [
       ethereum.Value.fromFixedBytes(param0),
     ]);
     if (result.reverted) {
@@ -259,18 +282,45 @@ export class DropERC20 extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  isClaimed(uHash: Bytes): boolean {
-    let result = super.call("isClaimed", "isClaimed(bytes32):(bool)", [
-      ethereum.Value.fromFixedBytes(uHash),
-    ]);
+  hasAddressClaimed(userAddress: Address): boolean {
+    let result = super.call(
+      "hasAddressClaimed",
+      "hasAddressClaimed(address):(bool)",
+      [ethereum.Value.fromAddress(userAddress)],
+    );
 
     return result[0].toBoolean();
   }
 
-  try_isClaimed(uHash: Bytes): ethereum.CallResult<boolean> {
-    let result = super.tryCall("isClaimed", "isClaimed(bytes32):(bool)", [
-      ethereum.Value.fromFixedBytes(uHash),
-    ]);
+  try_hasAddressClaimed(userAddress: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "hasAddressClaimed",
+      "hasAddressClaimed(address):(bool)",
+      [ethereum.Value.fromAddress(userAddress)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  hasUserClaimed(uHash: Bytes): boolean {
+    let result = super.call(
+      "hasUserClaimed",
+      "hasUserClaimed(bytes32):(bool)",
+      [ethereum.Value.fromFixedBytes(uHash)],
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_hasUserClaimed(uHash: Bytes): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "hasUserClaimed",
+      "hasUserClaimed(bytes32):(bool)",
+      [ethereum.Value.fromFixedBytes(uHash)],
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
