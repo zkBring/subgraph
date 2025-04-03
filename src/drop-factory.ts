@@ -6,6 +6,7 @@ import {
 } from "../generated/schema"
 import { Address } from '@graphprotocol/graph-ts';
 import { DropERC20Template } from "../generated/templates";
+import { ERC20 } from "../generated/DropFactory/ERC20";
 
 
 export function handleDropCreated(event: DropCreatedEvent): void {
@@ -15,6 +16,18 @@ export function handleDropCreated(event: DropCreatedEvent): void {
   entity.creator = event.params.creator.toHexString()
   entity.drop = event.params.drop.toHexString()
   entity.token = event.params.token.toHexString()
+  
+  // Get token decimals and symbol
+  let tokenAddress = event.params.token
+  let erc20Token = ERC20.bind(tokenAddress)
+  
+  // Try to get decimals and symbol
+  let decimalsResult = erc20Token.try_decimals()
+  let symbolResult = erc20Token.try_symbol()
+  
+  entity.decimals = decimalsResult.reverted ? 18 : decimalsResult.value
+  entity.symbol = symbolResult.reverted ? "Unknown" : symbolResult.value
+  
   entity.amount = event.params.amount
   entity.maxClaims = event.params.maxClaims
   entity.zkPassSchemaId = event.params.zkPassSchemaId.toHexString()

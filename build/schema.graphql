@@ -1,9 +1,10 @@
-
- type DropCreated @entity(immutable: true) {
+type DropCreated @entity(immutable: true) {
   id: ID!
   creator: String! # address as hex string
   drop: String!    # address as hex string
   token: String!   # address as hex string
+  decimals: Int!  # token decimals
+  symbol: String! # token symbol
   amount: BigInt!  # uint256
   maxClaims: BigInt! # uint256
   zkPassSchemaId: String!  # bytes32 as hex string

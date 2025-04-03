@@ -21,6 +21,8 @@ dataSources:
       abis:
         - name: DropFactory
           file: ./abis/DropFactory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: DropCreated(indexed address,indexed address,indexed address,uint256,uint256,bytes32,uint256,string)
           handler: handleDropCreated
