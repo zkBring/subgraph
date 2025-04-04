@@ -14,7 +14,8 @@ export function handleClaim(event: ClaimedEvent): void {
   entity.uHash = event.params.uHash.toHexString()
   entity.blockTimestamp = event.block.timestamp;
   entity.dropAddress = event.address.toHexString()
-
+  entity.txHash = event.transaction.hash.toHex()
+  
   entity.save();
 }
 

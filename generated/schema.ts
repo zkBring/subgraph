@@ -325,6 +325,19 @@ export class Claimed extends Entity {
   set dropAddress(value: string) {
     this.set("dropAddress", Value.fromString(value));
   }
+
+  get txHash(): string {
+    let value = this.get("txHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set txHash(value: string) {
+    this.set("txHash", Value.fromString(value));
+  }
 }
 
 export class MetadataUpdated extends Entity {

@@ -22,6 +22,7 @@ type Claimed @entity {
   uHash: String!
   blockTimestamp: BigInt!
   dropAddress: String!
+  txHash: String!
 }
   
 type MetadataUpdated @entity {
