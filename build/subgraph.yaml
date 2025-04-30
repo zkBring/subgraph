@@ -6,10 +6,10 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: DropFactory
-    network: base-sepolia
+    network: base
     source:
-      address: "0xB63b04c25D47b92606024150ca180E1a46bA14F2"
-      startBlock: 25109714
+      address: "0x40D79AFb34dfA51b47528e7A485DE74e4cdd1466"
+      startBlock: 29599230
       abi: DropFactory
     mapping:
       kind: ethereum/events
@@ -30,7 +30,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: DropERC20Template
-    network: base-sepolia
+    network: base
     source:
       abi: DropERC20
     mapping:
