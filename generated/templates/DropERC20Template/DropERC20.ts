@@ -112,6 +112,24 @@ export class Stopped__Params {
   }
 }
 
+export class zkPassSchemaIdUpdated extends ethereum.Event {
+  get params(): zkPassSchemaIdUpdated__Params {
+    return new zkPassSchemaIdUpdated__Params(this);
+  }
+}
+
+export class zkPassSchemaIdUpdated__Params {
+  _event: zkPassSchemaIdUpdated;
+
+  constructor(event: zkPassSchemaIdUpdated) {
+    this._event = event;
+  }
+
+  get zkPassSchemaId(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+}
+
 export class DropERC20 extends ethereum.SmartContract {
   static bind(address: Address): DropERC20 {
     return new DropERC20("DropERC20", address);
@@ -872,6 +890,36 @@ export class UpdateMetadataCall__Outputs {
   _call: UpdateMetadataCall;
 
   constructor(call: UpdateMetadataCall) {
+    this._call = call;
+  }
+}
+
+export class UpdateZkPassSchemaIdCall extends ethereum.Call {
+  get inputs(): UpdateZkPassSchemaIdCall__Inputs {
+    return new UpdateZkPassSchemaIdCall__Inputs(this);
+  }
+
+  get outputs(): UpdateZkPassSchemaIdCall__Outputs {
+    return new UpdateZkPassSchemaIdCall__Outputs(this);
+  }
+}
+
+export class UpdateZkPassSchemaIdCall__Inputs {
+  _call: UpdateZkPassSchemaIdCall;
+
+  constructor(call: UpdateZkPassSchemaIdCall) {
+    this._call = call;
+  }
+
+  get _zkPassSchemaId(): Bytes {
+    return this._call.inputValues[0].value.toBytes();
+  }
+}
+
+export class UpdateZkPassSchemaIdCall__Outputs {
+  _call: UpdateZkPassSchemaIdCall;
+
+  constructor(call: UpdateZkPassSchemaIdCall) {
     this._call = call;
   }
 }

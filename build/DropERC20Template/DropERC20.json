@@ -133,6 +133,19 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "zkPassSchemaId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "zkPassSchemaIdUpdated",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "BRING_TOKEN",
     "outputs": [
@@ -510,6 +523,19 @@
       }
     ],
     "name": "updateMetadata",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_zkPassSchemaId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "updateZkPassSchemaId",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
