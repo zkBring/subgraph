@@ -2,9 +2,10 @@ import {
   Claimed as ClaimedEvent,
   MetadataUpdated as MetadataUpdatedEvent,
   BringStaked as BringStakedEvent,
+  zkPassSchemaIdUpdated as ZkPassSchemaIdUpdatedEvent,
   Stopped as StoppedEvent
 } from "../generated/templates/DropERC20Template/DropERC20";
-import { Claimed, MetadataUpdated, BringStaked, Stopped } from "../generated/schema";
+import { Claimed, MetadataUpdated, BringStaked, Stopped, ZkPassSchemaIdUpdated } from "../generated/schema";
 
 export function handleClaim(event: ClaimedEvent): void {
   let id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
@@ -39,6 +40,16 @@ export function handleBringStaked(event: BringStakedEvent): void {
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash.toHexString();
+  entity.dropAddress = event.address.toHexString()
+  entity.save();
+}
+
+export function handleZkPassSchemaIdUpdated(event: ZkPassSchemaIdUpdatedEvent): void {
+  let id = event.transaction.hash.toHexString() + "-" + event.logIndex.toString();
+  let entity = new ZkPassSchemaIdUpdated(id);
+  entity.zkPassSchemaId = event.params.zkPassSchemaId.toHexString();
+  entity.blockNumber = event.block.number;
+  entity.blockTimestamp = event.block.timestamp;
   entity.dropAddress = event.address.toHexString()
   entity.save();
 }

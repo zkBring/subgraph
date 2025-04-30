@@ -52,3 +52,11 @@ type Stopped @entity {
   transactionHash: String!
   dropAddress: String!  
 }
+
+type ZkPassSchemaIdUpdated @entity {
+  id: ID!
+  zkPassSchemaId: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  dropAddress: String!  
+}
